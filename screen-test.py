@@ -1,14 +1,11 @@
-#pbery Pi.
+########################################################################
 #
-# Author : Bruce E. Hall, W8BH <bhall66@gmail.com>
-# Date : 27 Apr 2013
-#
-# This module uses the ST7735 controller and SPI data interface
-#
-#
-# For more information, see w8bh.net
+# Author : Guigur
+# thx to: Bruce E. Hall
+# Date : 06 Dec 2015
 #
 ########################################################################
+
 import RPi.GPIO as GPIO
 import time
 from PIL import Image
@@ -56,7 +53,7 @@ COLMOD = 0x3A #color mode
 #
 # Low-level routines
 # These routines access GPIO directly
-#
+########################################################################
 def SetPin(pinNumber,value):
     #sets the GPIO pin to desired value (1=on,0=off)
     GPIO.output(pinNumber,value)
@@ -70,6 +67,7 @@ def InitIO():
 ########################################################################
 #
 # Bit-Banging (software) SPI routines:
+# TODO: delete this code and use true SPI
 #
 #
 def PulseClock():
@@ -103,6 +101,7 @@ def Write888(value,reps=1):
     RGB = [red,green,blue] #assemble RGB as 3 byte list
     for a in range(reps): #send RGB x optional repeat
         WriteList(RGB)
+
 ########################################################################
 #
 # ST7735 driver routines:
@@ -181,6 +180,7 @@ def TimeDisplay():
     #elapsedTime=time.time()-startTime
     #print " Elapsed time %0.1f seconds" % (elapsedTime)
     DisplayBMP(3,3,128,128)
+
 ########################################################################
 #
 # Main Program
