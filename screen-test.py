@@ -154,7 +154,6 @@ def DisplayBMP(x0,y0,x1,y1):
     height = y1-y0
     x = 0
     y = 0
-    i = 0
     while (y < height):
         while (x < width):
             r, g, b = im.getpixel((x, y))
