@@ -4,7 +4,7 @@ LABCENTER PROTEUS TOOL INFORMATION FILE
 In case of difficulty, please e-mail support@labcenter.co.uk
 
 Tool set up for Proteus layout 'hardware_rasp_hat.pdsprj'.
-CADCAM generated at 14:32:11 on mercredi 9 mars 2016.
+CADCAM generated at 04:11:15 on jeudi 17 mars 2016.
 
 File List
 ---------
@@ -15,6 +15,7 @@ Bottom Silk Screen      : hardware_rasp_hat - CADCAM Bottom Silk Screen.TXT
 Top Solder Resist       : hardware_rasp_hat - CADCAM Top Solder Resist.TXT
 Bottom Solder Resist    : hardware_rasp_hat - CADCAM Bottom Solder Resist.TXT
 Top SMT Paste Mask      : hardware_rasp_hat - CADCAM Top SMT Paste Mask.TXT
+Bottom SMT Paste Mask   : hardware_rasp_hat - CADCAM Bottom SMT Paste Mask.TXT
 Mechanical 1            : hardware_rasp_hat - CADCAM Mechanical 1.TXT
 Drill                   : hardware_rasp_hat - CADCAM Drill.TXT
 
@@ -24,10 +25,10 @@ Format: RS274X, ASCII, 2.4, imperial, absolute, eob=*, LZO
 Notes:  D=Diameter, S=Side, W=Width, H=Height, C=Chamfer
 
 D10	CIRCLE  D=10th                                                            DRAW
-D11	CIRCLE  D=25th                                                            DRAW
-D12	CIRCLE  D=30th                                                            DRAW
-D13	CIRCLE  D=15th                                                            DRAW
-D14	CIRCLE  D=20th                                                            DRAW
+D11	CIRCLE  D=15th                                                            DRAW
+D12	CIRCLE  D=20th                                                            DRAW
+D13	CIRCLE  D=25th                                                            DRAW
+D14	CIRCLE  D=30th                                                            DRAW
 D15	CIRCLE  D=30th                                                            FLASH
 D16	CIRCLE  D=2.5th                                                           DRAW
 D17	RECT    W=43.3th              H=15.7th                                    FLASH
@@ -49,8 +50,8 @@ D72	SQUARE  S=80th                                                            FL
 D73	CIRCLE  D=40th                                                            FLASH
 D30	CIRCLE  D=55th                                                            FLASH
 D31	CIRCLE  D=82th                                                            FLASH
-D32	RECT    W=19.7th              H=122th                                     FLASH
-D33	RECT    W=122th               H=19.7th                                    FLASH
+D32	RECT    W=122th               H=19.7th                                    FLASH
+D33	RECT    W=35th                H=40th                                      FLASH
 D34	CIRCLE  D=8th                                                             DRAW
 D35	CIRCLE  D=9.8th                                                           DRAW
 D36	CIRCLE  D=7.8th                                                           DRAW
