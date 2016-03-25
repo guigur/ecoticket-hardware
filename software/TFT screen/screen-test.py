@@ -9,22 +9,16 @@
 import RPi.GPIO as GPIO
 import time
 from PIL import Image
-#TFT to RPi connections
-# PIN TFT RPi
-# 1 backlight 3v3
-# 2 MISO <none>
-# 3 CLK GPIO 24
-# 4 MOSI GPIO 23
-# 5 CS-TFT GND
-# 6 CS-CARD <none>
-# 7 D/C GPIO 25
-# 8 RESET <none>
-# 9 VCC 3V3
-# 10 GND GND
-SCLK = 24
-SDAT = 23
-DC = 25
-pins = [SCLK,SDAT,DC]
+from time import sleep
+
+SCLK = 21
+SDAT = 20
+DC = 6
+RESET = 26
+BACKLIGHT = 5
+CS = 16
+
+pins = [SCLK, SDAT, DC, RESET, BACKLIGHT, CS]
 
 #RGB888 Color constants
 BLACK = 0x000000
@@ -37,8 +31,8 @@ COLORSET = [RED,GREEN,BLUE,WHITE]
 #Screen dimentons
 COL = 128
 ROW = 128
-COLSTART = 2
-ROWSTART = 0
+COLSTART = -1
+ROWSTART = -1
 
 #ST7735 commands
 SWRESET = 0x01 #software reset
@@ -62,8 +56,12 @@ def InitIO():
     GPIO.setwarnings(False)
     for pin in pins:
         GPIO.setup(pin,GPIO.OUT)
-    GPIO.output(SCLK,0) #start with clock line low
-
+    GPIO.output(RESET, 0)
+    sleep(0.05);
+    GPIO.output(RESET, 1)
+    GPIO.output(SCLK, 0)
+    GPIO.output(BACKLIGHT, 1)
+    GPIO.output(CS, 0)
 ########################################################################
 #
 # Bit-Banging (software) SPI routines:
@@ -139,10 +137,10 @@ def FillScreen(color):
     FillRect(COLSTART,ROWSTART,COL + COLSTART,ROW,color)
 def ClearScreen():
     "Fills entire screen with black"
-    FillRect(COLSTART,ROWSTART,COL + COLSTART,ROW,BLACK)
+    FillRect(COLSTART,ROWSTART,COL + COLSTART,ROW,GREEN)
     #FillRect(2,0,127,127,BLACK)
 def DisplayBMP(x0,y0,x1,y1):
-    im = Image.open("nigga128.bmp") #Can be many different formats.
+    im = Image.open("bitmap_de_tests.bmp") #Can be many different formats.
     #pix = im.load()
     
     #print im.size #Get the width and hight of the image for iterating over
@@ -178,13 +176,13 @@ def TimeDisplay():
     ClearScreen()
     #elapsedTime=time.time()-startTime
     #print " Elapsed time %0.1f seconds" % (elapsedTime)
-    DisplayBMP(3,3,128,128)
+    DisplayBMP(-1, -2,127,126)
 
 ########################################################################
 #
 # Main Program
 #
-print "Adafruit 1.8 TFT display demo"
+print "STR7735 TFT display demo"
 InitIO()
 InitDisplay()
 TimeDisplay()
