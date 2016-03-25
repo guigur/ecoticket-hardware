@@ -13,7 +13,7 @@ Keep in mind it's just an alpha.
 ![ENC28J60 ethernet interfaces](/PCB/Schematics/PNG/ethernet interface.png "the 2 ethernet interface")
 
 ### And the gerber files preview
-![the ecoticket alpha](/PCB/pcb%2018.03.16.PNG "The gerber viewer")
+![the ecoticket alpha](/PCB/Realease%20alpha/pcb%2018.03.16.PNG "The gerber viewer")
 
 ## Program for the NRF51822 (BT module)
 This part is empty for now
