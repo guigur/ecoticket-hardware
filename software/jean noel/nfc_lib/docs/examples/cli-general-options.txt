@@ -1,3 +1,0 @@
-.. option:: --loop, -l
-
-   Repeat the command endlessly, use Control-C to abort.

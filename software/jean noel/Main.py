@@ -1,4 +1,4 @@
-import Class
+import EcoticketClass
 
-eco = Class.EcoTicket()
+eco = EcoticketClass.EcoTicket()
 eco.main()
