@@ -1,8 +1,1 @@
-The RPI connector is not mirrored!
-The holes for the ble module are a little too small
-RX and TX are reversed
-The quartz footprints are mirrored
-The footprint of the screen is not centred
-The holes for the pi are not drilled
-The silkscreen disabled for the worf "guigur" is not working
-The foot print for the ethernet port w/ led is not right
+The silkscreen disabled for the word guigur" is not working
