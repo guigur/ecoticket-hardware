@@ -65,8 +65,8 @@ class EcoTicket():
         #mac = ':'.join(['%02x' % ord(char) for char in info[18:24]])
 
         ## For test purposes, mac address is hard coded so please change with your own bluetooth mac address
-        mac = '30:3A:64:5C:03:31'
-
+        #mac = '30:3A:64:5C:03:31'
+        mac = '00:27:13:A5:FD:60'
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -77,7 +77,8 @@ class EcoTicket():
         qr.make(fit=True)
 
         img = qr.make_image()
-
+        print('y')
+        img.save('test.png')
         img.show()
 
     ## Manage NFC Communication
