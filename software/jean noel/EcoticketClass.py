@@ -65,8 +65,12 @@ class EcoTicket():
         #mac = ':'.join(['%02x' % ord(char) for char in info[18:24]])
 
         ## For test purposes, mac address is hard coded so please change with your own bluetooth mac address
+        #Jean noel
         #mac = '30:3A:64:5C:03:31'
-        mac = '00:27:13:A5:FD:60'
+        #guigur
+        #mac = '00:27:13:A5:FD:60'
+        #pi guigur
+        mac = '00:1A:7D:DA:71:11'
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
