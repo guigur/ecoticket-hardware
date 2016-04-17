@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import struct
 import random
 
 import PythonMagick
@@ -18,6 +19,7 @@ import time
 import datetime
 
 import ParserClass
+import UtilsClass
 
 class EcoTicket():
     ## Conf values
@@ -37,6 +39,23 @@ class EcoTicket():
 
     ## Parser Instance
     parser = ParserClass.Parser()
+
+    ## Utils Instance
+    utils = UtilsClass.Utils()
+
+    def getMacAddress(self):
+        bdaddr = ""
+        rawaddr = self.utils.read_local_bdaddr()
+        tmp = rawaddr[0]
+        tmp = tmp.split(":")
+        for i in tmp:
+            if len(i) == 1:
+                bdaddr = bdaddr+"0"+i+":"
+            else:
+                bdaddr = bdaddr+i+":"
+        bdaddr = bdaddr[:-1]
+        return bdaddr
+
 
     ## Define conf values from the conf file
     def parseConfFile(self):
@@ -58,19 +77,9 @@ class EcoTicket():
         return output
 
     ## Create and display QRCode
-    def createAndDisplayQRCode(self):
-        #ifname = 'hci0'
-        #s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #info = fcntl.ioctl(s.fileno(), 0x8927,  struct.pack('256s', ifname[:15]))
-        #mac = ':'.join(['%02x' % ord(char) for char in info[18:24]])
+    def createAndDisplayQRCode(self): 
+        mac = self.getMacAddress()
 
-        ## For test purposes, mac address is hard coded so please change with your own bluetooth mac address
-        #Jean noel
-        #mac = '30:3A:64:5C:03:31'
-        #guigur
-        #mac = '00:27:13:A5:FD:60'
-        #pi guigur
-        mac = '00:1A:7D:DA:71:11'
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -81,14 +90,12 @@ class EcoTicket():
         qr.make(fit=True)
 
         img = qr.make_image()
-        print('y')
-        img.save('test.png')
+
         img.show()
 
     ## Manage NFC Communication
     def nfcCommunication(self):
-        ## For test purposes, mac address is hard coded so please change with your own bluetooth mac address
-        mac = '30:3A:64:5C:03:31'
+        mac = self.getMacAddress()
 
         os.system(("python beam.py send text %s") %(mac))
 

@@ -25,19 +25,9 @@ sudo pip install pybluez
 Pour le QRCode :
 https://pypi.python.org/pypi/qrcode
 
-Pour Rapspberry PI:
-sudo sdptool add SP
-Edit /lib/systemd/system/bluetooth.service and add "-C" after "bluetoothd"
-Reboot
 ---
 
-Avant de lancer le programme pensez à modifier l'adresse mac qui est hardcoded
-dans le code du fichier EcoticketClass.py. Vous devez remplacer l'adresse mac
-déjà présente par l'adresse mac de votre puce bluetooth (et non celle de votre
-carte réseau)
-
-pour trouver votre adresse mac de votre dongle ou carte bluetooth faites:
-hcitool dev
+MAJ 17/04/2016 : l'adresse MAC est récupérée automatiquement !
 
 Instructions de lancement :
 python Main.py
