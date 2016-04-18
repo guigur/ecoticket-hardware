@@ -25,6 +25,11 @@ sudo pip install pybluez
 Pour le QRCode :
 https://pypi.python.org/pypi/qrcode
 
+Pour Rapspberry PI:
+-sudo sdptool add SP
+-Edit /lib/systemd/system/bluetooth.service and add "-C" after "bluetoothd"
+-Reboot
+
 ---
 
 MAJ 17/04/2016 : l'adresse MAC est récupérée automatiquement !
