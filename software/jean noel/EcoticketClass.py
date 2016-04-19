@@ -43,19 +43,8 @@ class EcoTicket():
     ## Utils Instance
     utils = UtilsClass.Utils()
 
-    def getMacAddress(self):
-        bdaddr = ""
-        rawaddr = self.utils.read_local_bdaddr()
-        tmp = rawaddr[0]
-        tmp = tmp.split(":")
-        for i in tmp:
-            if len(i) == 1:
-                bdaddr = bdaddr+"0"+i+":"
-            else:
-                bdaddr = bdaddr+i+":"
-        bdaddr = bdaddr[:-1]
-        return bdaddr
-
+    ## Get Mac Address
+    mac = utils.getMacAddress()
 
     ## Define conf values from the conf file
     def parseConfFile(self):
@@ -78,15 +67,13 @@ class EcoTicket():
 
     ## Create and display QRCode
     def createAndDisplayQRCode(self): 
-        mac = self.getMacAddress()
-
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
             border=4,
         )
-        qr.add_data(mac)
+        qr.add_data(self.mac)
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -95,9 +82,7 @@ class EcoTicket():
 
     ## Manage NFC Communication
     def nfcCommunication(self):
-        mac = self.getMacAddress()
-
-        os.system(("python beam.py send text %s") %(mac))
+        os.system(("python beam.py send text %s") %(self.mac))
 
     ## Manage bluetooth Connection
     def bluetoothConnection(self, pdfPath, txtPath, total):
