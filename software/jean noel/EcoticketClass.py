@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import struct
 import random
 
 import PythonMagick
@@ -18,6 +19,7 @@ import time
 import datetime
 
 import ParserClass
+import UtilsClass
 
 class EcoTicket():
     ## Conf values
@@ -37,6 +39,12 @@ class EcoTicket():
 
     ## Parser Instance
     parser = ParserClass.Parser()
+
+    ## Utils Instance
+    utils = UtilsClass.Utils()
+
+    ## Get Mac Address
+    mac = utils.getMacAddress()
 
     ## Define conf values from the conf file
     def parseConfFile(self):
@@ -58,35 +66,23 @@ class EcoTicket():
         return output
 
     ## Create and display QRCode
-    def createAndDisplayQRCode(self):
-        #ifname = 'hci0'
-        #s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #info = fcntl.ioctl(s.fileno(), 0x8927,  struct.pack('256s', ifname[:15]))
-        #mac = ':'.join(['%02x' % ord(char) for char in info[18:24]])
-
-        ## For test purposes, mac address is hard coded so please change with your own bluetooth mac address
-        #mac = '30:3A:64:5C:03:31'
-        mac = '00:27:13:A5:FD:60'
+    def createAndDisplayQRCode(self): 
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
             border=4,
         )
-        qr.add_data(mac)
+        qr.add_data(self.mac)
         qr.make(fit=True)
 
         img = qr.make_image()
-        print('y')
-        img.save('test.png')
+
         img.show()
 
     ## Manage NFC Communication
     def nfcCommunication(self):
-        ## For test purposes, mac address is hard coded so please change with your own bluetooth mac address
-        mac = '30:3A:64:5C:03:31'
-
-        os.system(("python beam.py send text %s") %(mac))
+        os.system(("python beam.py send text %s") %(self.mac))
 
     ## Manage bluetooth Connection
     def bluetoothConnection(self, pdfPath, txtPath, total):
