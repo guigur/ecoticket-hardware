@@ -20,4 +20,14 @@ This part is empty for now
 
 ## Program for the ENC28J60
 The Ecoticket's Hardware use 2 ENC28J60 chips. They act like ethernet interface thru the SPI bus.
-This part is also empty
+The overlay program is in the software/config directory
+just put it in the folder
+```
+cp second-enc28j60-overlay.dtb /boot/overlay/.
+```
+and you have to add at the end of the boot file
+```
+sudo emacs /boot/config.txt
+
+    toverlay=second-enc28j60-overlay
+```
