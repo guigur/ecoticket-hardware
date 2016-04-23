@@ -25,9 +25,12 @@ just put it in the folder
 ```
 cp second-enc28j60-overlay.dtb /boot/overlay/.
 ```
-and you have to add at the end of the boot file
+Then open the config file
 ```
 sudo emacs /boot/config.txt
-
-    toverlay=second-enc28j60-overlay
+```
+And add at the end of the file theses lines
+```
+overlay=enc28j60-overlay
+overlay=second-enc28j60-overlay
 ```
