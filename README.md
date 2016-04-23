@@ -5,7 +5,13 @@ In this repot, you will found the schematics, the gerbers files, the proteus pro
 The ecoticket *alpha* is based arround the **Raspberry PI**. 
 The PCB is 10x10 cm and plugs directly on the PI.
 Keep in mind it's just an alpha.
-
+### TODO LIST
+The ethernet interfaces on the Alpha does not work
+The NRF51822 is not connected to the Raspberry PI
+The crystals footprints are mirrored
+The TX and RX lines are reversed
+### 3D render
+![the ecoticket main view](/PCB/Realease%20alpha/pcb_alpha_front_w_pi.png "render")
 ### Here is the schematics
 ![the ecoticket main view](/PCB/Schematics/PNG/otherthings.png "Main view")
 ![serial debug](/PCB/Schematics/PNG/ft232rl.png "the serial debug")
