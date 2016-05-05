@@ -15,10 +15,10 @@ The holes are not drilled
 ### 3D render
 ![the ecoticket main view](/PCB/Realease%20alpha/pcb_alpha_front_w_pi.png "render")
 ### Here is the schematics
-![the ecoticket main view](/PCB/Schematics/PNG/otherthings.png "Main view")
-![serial debug](/PCB/Schematics/PNG/ft232rl.png "the serial debug")
-![PN532 nfc interface](/PCB/Schematics/PNG/nfc.png "the nfc interface")
-![ENC28J60 ethernet interfaces](/PCB/Schematics/PNG/ethernet interface.png "the 2 ethernet interface")
+![the ecoticket main view](/PCB/pre-beta/Schematics/misc.bmp "Main view")
+![serial debug](/PCB/pre-beta/Schematics/ftdi.bmp "the serial debug")
+![PN532 nfc interface](/PCB/pre-beta/Schematics/nfc.bmp "the nfc interface")
+![ENC28J60 ethernet interfaces](/PCB/pre-beta/Schematics/ethernets.bmp "the 2 ethernet interface")
 
 ### And the gerber files preview
 ![the ecoticket alpha](/PCB/Realease%20alpha/pcb%2018.03.16.PNG "The gerber viewer")
