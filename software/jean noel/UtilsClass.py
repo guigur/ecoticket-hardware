@@ -32,17 +32,3 @@ class Utils():
         # restore old filter
         hci_sock.setsockopt( _bt.SOL_HCI, _bt.HCI_FILTER, old_filter )
         return [bdaddr]
-
-    def getMacAddress(self):
-        bdaddr = ""
-        rawaddr = self.read_local_bdaddr()
-        tmp = rawaddr[0]
-        tmp = tmp.split(":")
-        for i in tmp:
-            if len(i) == 1:
-                bdaddr = bdaddr+"0"+i+":"
-            else:
-                bdaddr = bdaddr+i+":"
-        bdaddr = bdaddr[:-1]
-        return bdaddr
-

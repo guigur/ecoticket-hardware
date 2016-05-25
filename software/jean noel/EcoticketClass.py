@@ -43,15 +43,23 @@ class EcoTicket():
     ## Utils Instance
     utils = UtilsClass.Utils()
 
-    ## Get Mac Address
-    mac = utils.getMacAddress()
+    def getMacAddress(self):
+        bdaddr = ""
+        rawaddr = self.utils.read_local_bdaddr()
+        tmp = rawaddr[0]
+        tmp = tmp.split(":")
+        for i in tmp:
+            if len(i) == 1:
+                bdaddr = bdaddr+"0"+i+":"
+            else:
+                bdaddr = bdaddr+i+":"
+        bdaddr = bdaddr[:-1]
+        return bdaddr
+
 
     ## Define conf values from the conf file
-    def parseConfFile(self):
-        file = open('./parsing.conf')
-        for line in file:
-            self.conf_values.append(line.rstrip('\n'))
-        file.close()
+    def getConfValues(self):
+        self.conf_values = self.parser.getConf()
         return
 
     ## Convert PDF to TXT
@@ -61,19 +69,21 @@ class EcoTicket():
         #txtFile = open(txtFileName+'.txt', 'w')
 
         input = pdf
-        output = txtFileName+'.txt'
+        output = "parsed/"+txtFileName+'.txt'
         os.system(("pdftotext %s %s") %( input , output))
         return output
 
     ## Create and display QRCode
     def createAndDisplayQRCode(self): 
+        mac = self.getMacAddress()
+
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
             border=4,
         )
-        qr.add_data(self.mac)
+        qr.add_data(mac)
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -82,7 +92,9 @@ class EcoTicket():
 
     ## Manage NFC Communication
     def nfcCommunication(self):
-        os.system(("python beam.py send text %s") %(self.mac))
+        mac = self.getMacAddress()
+
+        os.system(("python beam.py send text %s") %(mac))
 
     ## Manage bluetooth Connection
     def bluetoothConnection(self, pdfPath, txtPath, total):
@@ -174,14 +186,14 @@ class EcoTicket():
 
     def main(self):
         ###### For test purposes, PDF path is hardcoded
-        pdf = "test3.pdf"
+        pdf = "pdfs/le_comptoir_11.pdf"
         ######
         choice = 0
 
-        print ("Main : Start Parsing Conf File ...")
+        print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
-        self.parseConfFile()
-        print ("Main : End Parsing Conf File ...")
+        self.getConfValues()
+        print ("Main : End Getting Conf Values ...")
 
         print("Main : Start Reading PDF ...")
         ## Test read PDF

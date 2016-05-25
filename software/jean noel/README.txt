@@ -1,9 +1,5 @@
 Le code est a éxécuter OBLIGATOIREMENT sur un systeme linux.
 
-Le PDF de test fourni est test3.pdf, le nom de ce PDF est harcoded dans
-EcoticketClass.py (vous pouvez changer le PDF de test mais dans ce cas là il
-faut penser a modifier le nom).
-
 A savoir que contrairement à la précédente version je n'utilise pas d'OCR
 mais une fonction built-in de linux qui me permet de lire les data du fichier
 PDF directement. Cela signifie que le programme ne fonctionnera pas si vous
@@ -25,14 +21,20 @@ sudo pip install pybluez
 Pour le QRCode :
 https://pypi.python.org/pypi/qrcode
 
-Pour Rapspberry PI:
--sudo sdptool add SP
--Edit /lib/systemd/system/bluetooth.service and add "-C" after "bluetoothd"
--Reboot
-
 ---
 
 MAJ 17/04/2016 : l'adresse MAC est récupérée automatiquement !
+MAJ 25/05/2016 : nouveau parser + ajout du support du restaurant Le Comptoir (voir Setup)
+
+Setup :
+Le parser ne fonctionne plus avec des fichiers de conf, on utilise désormais
+un parser différent par commerce.
+Commerces supportés :
+	- Caisse en Ligne (pour tester)
+	- Le Comptoir (restaurant de Bobby)
+Le parser est le fichier ParserClass.py et celui par defaut et celui du Comptoir.
+Si vous voulez changer de parser, il faut copier coller un des parsers disponibles
+dans le dossier confs à la place du ParserClass.py à la racine du projet.
 
 Instructions de lancement :
 python Main.py
@@ -44,6 +46,6 @@ Le programme ne se quitte pas tout seul, il faut le ctrl-c
 ---
 
 Merci de ne pas modifier le code a part pour changer les valeur décrites
-précédement (à savoir le nom du PDF et l'adresse mac).
+précédement (à savoir le nom du PDF).
 Si vous remarqué un disfonctionnement ou quelque autre chose qui nécessite d'y
 porter attention, merci de le dire.
