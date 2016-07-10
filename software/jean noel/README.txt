@@ -21,10 +21,23 @@ sudo pip install pybluez
 Pour le QRCode :
 https://pypi.python.org/pypi/qrcode
 
+Pour Node.js :
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo apt-get install -y build-essential
+
+Pour le BLE :
+sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
+
+Le programme est à lancer en root mais en éxécutant cette commande vous pourrez le lancer en non-root (normalement) :
+sudo apt-get install libcap2-bin
+sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
+
 ---
 
 MAJ 17/04/2016 : l'adresse MAC est récupérée automatiquement !
 MAJ 25/05/2016 : nouveau parser + ajout du support du restaurant Le Comptoir (voir Setup)
+MAJ 10/07/2016 : implémentation du BLE + nouveaux packages à installer + il faut lancer le programme en root
 
 Setup :
 Le parser ne fonctionne plus avec des fichiers de conf, on utilise désormais

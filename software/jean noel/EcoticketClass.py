@@ -21,6 +21,8 @@ import datetime
 import ParserClass
 import UtilsClass
 
+from Naked.toolshed.shell import execute_js
+
 class EcoTicket():
     ## Conf values
     # 0 -> Title
@@ -36,6 +38,9 @@ class EcoTicket():
 
     ## Ticket temp name
     ticketName = ""
+
+    ## Device name
+    deviceName = "EcoTicketBeta"
 
     ## Parser Instance
     parser = ParserClass.Parser()
@@ -69,7 +74,7 @@ class EcoTicket():
         #txtFile = open(txtFileName+'.txt', 'w')
 
         input = pdf
-        output = "parsed/"+txtFileName+'.txt'
+        output = "./parsed/"+txtFileName+'.txt'
         os.system(("pdftotext %s %s") %( input , output))
         return output
 
@@ -83,7 +88,7 @@ class EcoTicket():
             box_size=10,
             border=4,
         )
-        qr.add_data(mac)
+        qr.add_data(self.deviceName + '-' + mac)
         qr.make(fit=True)
 
         img = qr.make_image()
@@ -94,7 +99,7 @@ class EcoTicket():
     def nfcCommunication(self):
         mac = self.getMacAddress()
 
-        os.system(("python beam.py send text %s") %(mac))
+        os.system(("python beam.py send text %s") %(self.deviceName + '-' + mac))
 
     ## Manage bluetooth Connection
     def bluetoothConnection(self, pdfPath, txtPath, total):
@@ -111,82 +116,100 @@ class EcoTicket():
         ShopName = ShopName.replace(' ', '-')
         pdfRealName = date + '_' + total + '_' + ShopName
 
-        name = "BluetoothChat"
-        uuid = "fa87c0d0-afac-11de-8a39-0800200c9a66"
+        name_tmp = open('parsed/name_tmp.txt', 'w')
+        pdf_tmp = open('parsed/pdf_tmp.txt', 'w')
+        txt_tmp = open('parsed/txt_tmp.txt', 'w')
+        pdf_data = open(pdfPath, 'rb')
+        txt_data = open(txtPath, 'rb')
 
-        server_sock = bluetooth.BluetoothSocket( bluetooth.RFCOMM )
-        server_sock.bind(("", bluetooth.PORT_ANY))
-        server_sock.listen(1)
-        port = server_sock.getsockname()[1]
+        name_tmp.write(pdfRealName)
+        pdf_tmp.write(pdf_data.read())
+        txt_tmp.write(txt_data.read())
 
-        bluetooth.advertise_service( server_sock, name, uuid )
+        name_tmp.close()
+        pdf_tmp.close()
+        txt_tmp.close()
+        pdf_data.close()
+        txt_data.close()
 
-        print "Waiting for connection on RFCOMM channel %d" % port
+        success = execute_js('js/main.js')
 
-        class echoThread(threading.Thread):
-            def __init__ (self,sock,client_info):
-                threading.Thread.__init__(self)
-                self.sock = sock
-                self.client_info = client_info
-            def run(self):
-                try:
-                    ## Send PDF
-                    time.sleep(1)
-                    self.sock.send("SOF PDF " + pdfRealName)
-                    time.sleep(1)
-                    pdfSize = os.path.getsize(pdfPath)
-                    f = open(pdfPath,'rb')
-                    print 'Sending PDF ...'
-                    l = f.read(pdfSize)
-                    self.sock.send(l)
-                    #while (l):
-                    #    self.sock.send(l)
-                    #    l = f.read(1024)
-                    #    print 'Sending PDF ...'
-                    f.close()
-                    print 'Sending PDF done !'
-                    time.sleep(1)
-                    self.sock.send("EOF PDF")
-
-                    ## Send TXT
-                    time.sleep(1)
-                    self.sock.send("SOF TXT " + pdfRealName)
-                    time.sleep(1)
-                    txtSize = os.path.getsize(txtPath)
-                    f = open(txtPath,'rb')
-                    print 'Sending TXT ...'
-                    l = f.read(txtSize)
-                    self.sock.send(l)
-                    #while (l):
-                    #    print 'Sending TXT ...'
-                    #    self.sock.send(l)
-                    #    l = f.read(1024)
-                    f.close()
-                    print 'Sending TXT done !'
-                    time.sleep(1)
-                    self.sock.send("EOF TXT")
-
-                except IOError:
-                    pass
-                self.sock.close()
-                print self.client_info, ": disconnected"
-                ## While can't exit thread, do os.remove here
-                os.remove(txtPath)
-
-        timeout = time.time() + 10
-        while (True):
-            client_sock, client_info = server_sock.accept()
-            print client_info, ": connection accepted"
-            echo = echoThread(client_sock, client_info)
-            echo.setDaemon(True)
-            echo.start()
-
-        server_sock.close()
+#        name = "BluetoothChat"
+#        uuid = "fa87c0d0-afac-11de-8a39-0800200c9a66"
+#
+#        server_sock = bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+#        server_sock.bind(("", bluetooth.PORT_ANY))
+#        server_sock.listen(1)
+#        port = server_sock.getsockname()[1]
+#
+#        bluetooth.advertise_service( server_sock, name, uuid )
+#
+#        print "Waiting for connection on RFCOMM channel %d" % port
+#
+#        class echoThread(threading.Thread):
+#            def __init__ (self,sock,client_info):
+#                threading.Thread.__init__(self)
+#                self.sock = sock
+#                self.client_info = client_info
+#            def run(self):
+#                try:
+#                    ## Send PDF
+#                    time.sleep(1)
+#                    self.sock.send("SOF PDF " + pdfRealName)
+#                    time.sleep(1)
+#                    pdfSize = os.path.getsize(pdfPath)
+#                    f = open(pdfPath,'rb')
+#                    print 'Sending PDF ...'
+#                    l = f.read(pdfSize)
+#                    self.sock.send(l)
+#                    #while (l):
+#                    #    self.sock.send(l)
+#                    #    l = f.read(1024)
+#                    #    print 'Sending PDF ...'
+#                    f.close()
+#                    print 'Sending PDF done !'
+#                    time.sleep(1)
+#                    self.sock.send("EOF PDF")
+#
+#                    ## Send TXT
+#                    time.sleep(1)
+#                    self.sock.send("SOF TXT " + pdfRealName)
+#                    time.sleep(1)
+#                    txtSize = os.path.getsize(txtPath)
+#                    f = open(txtPath,'rb')
+#                    print 'Sending TXT ...'
+#                    l = f.read(txtSize)
+#                    self.sock.send(l)
+#                    #while (l):
+#                    #    print 'Sending TXT ...'
+#                    #    self.sock.send(l)
+#                    #    l = f.read(1024)
+#                    f.close()
+#                    print 'Sending TXT done !'
+#                    time.sleep(1)
+#                    self.sock.send("EOF TXT")
+#
+#                except IOError:
+#                    pass
+#                self.sock.close()
+#                print self.client_info, ": disconnected"
+#                ## While can't exit thread, do os.remove here
+#                os.remove(txtPath)
+#
+#        timeout = time.time() + 10
+#        while (True):
+#            client_sock, client_info = server_sock.accept()
+#            print client_info, ": connection accepted"
+#            echo = echoThread(client_sock, client_info)
+#            echo.setDaemon(True)
+#            echo.start()
+#
+#        server_sock.close()
         print "all done"
 
     def main(self):
         ###### For test purposes, PDF path is hardcoded
-        pdf = "pdfs/le_comptoir_11.pdf"
+        pdf = "pdfs/le_comptoir_1.pdf"
         ######
         choice = 0
 
