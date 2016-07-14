@@ -19,9 +19,7 @@ var i = 0;
 var len = pdf.length;
 while (i < len) {
 	characs.push(new EchoPdf(pdf[i], uuid.v1()));
-	console.log(pdf[i]);
 	i = i + 1;
-	console.log(i);
 }
 
 var txt = fs.readFileSync('./parsed/txt_tmp.txt', 'utf8');
@@ -30,20 +28,8 @@ var i = 0;
 var len = txt.length;
 while (i < len) {
 	characs.push(new EchoTxt(txt[i], uuid.v1()));
-	console.log(txt[i]);
 	i = i + 1;
-	console.log(i);
 }
-
-/*var txt = fs.readFileSync('./parsed/txt_tmp.txt', 'utf8');
-pdf = txt.match(/[\s\S]{1,20}/g) || [];
-var i = 0;
-var len = pdf.length;
-while (i < len) {
-	characs.push(new EchoPdf(pdf[i], i));
-	console.log(pdf[i]);
-	i = i + 1;
-}*/
 
 process.env['BLENO_DEVICE_NAME'] = 'EcoTicketBeta';
 
