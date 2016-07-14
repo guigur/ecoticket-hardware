@@ -4,21 +4,13 @@ var bleno = require('bleno');
 
 var buff = "";
 
-fs = require('fs');
-fs.readFile('./parsed/pdf_tmp.txt', 'utf8', function (err,data) {
-	if (err) {
-		return console.log(err);
-	}
-	buff = Buffer(data);
-});
-
 var BlenoCharacteristic = bleno.Characteristic;
 
-var EchoCharacteristic = function() {
+var EchoCharacteristic = function(data, i) {
 	EchoCharacteristic.super_.call(this, {
-		uuid: '186a1c44-468f-11e6-beb8-9e71128cae77',
+		uuid: i,
 	    properties: ['read'],
-		value: buff
+		value: new Buffer(data)
 	});
 
 	this._value = buff;

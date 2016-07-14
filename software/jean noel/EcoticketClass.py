@@ -23,6 +23,10 @@ import UtilsClass
 
 from Naked.toolshed.shell import execute_js
 
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+from os.path import expanduser
+
 class EcoTicket():
     ## Conf values
     # 0 -> Title
@@ -48,6 +52,10 @@ class EcoTicket():
     ## Utils Instance
     utils = UtilsClass.Utils()
 
+    ## PDF printed path
+    home = expanduser("~")
+    printedpath = home + "/PDF/tmp.pdf"
+
     def getMacAddress(self):
         bdaddr = ""
         rawaddr = self.utils.read_local_bdaddr()
@@ -66,6 +74,34 @@ class EcoTicket():
     def getConfValues(self):
         self.conf_values = self.parser.getConf()
         return
+
+    ## Wait for PDF to be printed
+    def waitPDF(self):
+	class MyHandler(FileSystemEventHandler):
+    	    def on_modified(self, event):
+	        path = expanduser("~") + "/PDF"
+	        newname = path + "/tmp.pdf"
+	        if event.src_path != path:
+		    print "waitPDF : PDF printed !"
+		    observer.stop()
+		    os.rename(event.src_path, newname)
+
+        dirpath = self.home + "/PDF"
+        event_handler = MyHandler()
+        observer = Observer()
+        observer.schedule(event_handler, path=dirpath, recursive=False)
+        observer.start()
+	prev_mod = os.stat(dirpath + "/tmp.pdf").st_mtime
+
+        try:
+            while True:
+                time.sleep(1)
+		act_mod = os.stat(dirpath + "/tmp.pdf").st_mtime
+		if act_mod > prev_mod:
+		    return
+        except KeyboardInterrupt:
+            observer.stop()
+        observer.join()
 
     ## Convert PDF to TXT
     def readPDF(self, pdf):
@@ -209,14 +245,22 @@ class EcoTicket():
 
     def main(self):
         ###### For test purposes, PDF path is hardcoded
-        pdf = "pdfs/le_comptoir_1.pdf"
+        # pdf = "pdfs/le_comptoir_1.pdf"
         ######
+
+	pdf = self.printedpath
+
         choice = 0
 
         print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
         self.getConfValues()
         print ("Main : End Getting Conf Values ...")
+
+        print ("Main : Start Waiting for PDF ...")
+	## Wait for PDF to be printed
+        self.waitPDF()
+        print ("Main : End Waiting for PDF ...")
 
         print("Main : Start Reading PDF ...")
         ## Test read PDF
@@ -250,5 +294,7 @@ class EcoTicket():
 
         ## Clean temp files
         os.remove(txtPath)
+
+	self.main()
 
         return
