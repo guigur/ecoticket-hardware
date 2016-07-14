@@ -28,8 +28,8 @@ cd ../js
 echo "Installing bluetooth ..."
 apt-get install bluetooth libbluetooth-dev
 pip install pybluez
-pip install uuid
 npm init
+npm install uuid
 npm install bleno
 npm install bluetooth-hci-socket
 echo "Done !"

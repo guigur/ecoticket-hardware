@@ -36,7 +36,7 @@ sudo pip install Naked
 
 Pour le BLE :
 sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
-sudo pip install uuid
+sudo npm install uuid
 
 Pour CUPS :
 sudo apt-get install cups-pdf
