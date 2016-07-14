@@ -3,6 +3,7 @@ import os
 import sys
 import struct
 import random
+import subprocess
 
 import PythonMagick
 
@@ -46,15 +47,18 @@ class EcoTicket():
     ## Device name
     deviceName = "EcoTicketBeta"
 
+    ## Printer name for paper
+    paperprinter = ""
+
+    ## PDF printed path
+    home = expanduser("~")
+    printedpath = home + "/PDF/tmp.pdf"
+
     ## Parser Instance
     parser = ParserClass.Parser()
 
     ## Utils Instance
     utils = UtilsClass.Utils()
-
-    ## PDF printed path
-    home = expanduser("~")
-    printedpath = home + "/PDF/tmp.pdf"
 
     def getMacAddress(self):
         bdaddr = ""
@@ -251,6 +255,7 @@ class EcoTicket():
 	pdf = self.printedpath
 
         choice = 0
+	mode = 0
 
         print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
@@ -272,28 +277,46 @@ class EcoTicket():
         total = self.parser.parseFile(txtPath, self.conf_values)
         print("Main : End Parsing TXT File ...")
 
-        while (choice != 1 and choice != 2):
-            choice = input('Choose QRCode(1) or NFC(2): ')
+	while (choice != 1 and choice != 2 and choice != 3):
+            choice = input('Choose Virtual(1) or Paper(2) or Both(3): ')
             if (choice == 1):
-                print("Main : Start Displaying QRCode ...")
-                ## Test display qrcode
-                self.createAndDisplayQRCode()
-                print("Main : End Displaying QRCode ...")
+		mode = 1
             elif (choice == 2):
-                print("Main : Start NFC ...")
-                ## Test display qrcode
-                self.nfcCommunication()
-                print("Main : End NFC ...")
+                mode = 2
+	    elif (choice == 3):
+                mode = 3
             else :
                 print("Wrong Choice !")
 
-        print("Main : Start Sending via Bluetooth ...")
-        ## Test bluetooth
-        self.bluetoothConnection(pdf, txtPath, total)
-        print("Main : End Sending via Bluetooth ...")
+        print mode
+	# Manage virtual and both modes
+	choice = 0
+        if (mode == 1 or mode == 3):
+            print choice
+            while (choice != 1 and choice != 2):
+                choice = input('Choose QRCode(1) or NFC(2): ')
+                if (choice == 1):
+                    print("Main : Start Displaying QRCode ...")
+                    ## Test display qrcode
+                    self.createAndDisplayQRCode()
+                    print("Main : End Displaying QRCode ...")
+                elif (choice == 2):
+                    print("Main : Start NFC ...")
+                    ## Test display qrcode
+                    self.nfcCommunication()
+                    print("Main : End NFC ...")
+                else :
+                    print("Wrong Choice !")
+            print("Main : Start Sending via Bluetooth ...")
+            ## Test bluetooth
+            self.bluetoothConnection(pdf, txtPath, total)
+            print("Main : End Sending via Bluetooth ...")
+            ## Clean temp files
+            os.remove(txtPath)
 
-        ## Clean temp files
-        os.remove(txtPath)
+	# Manage paper mode
+	if (mode == 2 or mode == 3):
+	    subprocess.call(["lpr", "-P", self.paperprinter, pdf])
 
 	self.main()
 

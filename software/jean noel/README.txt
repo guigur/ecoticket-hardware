@@ -18,6 +18,9 @@ oublié, si tel est le cas merci de me le dire) :
 Pour installer tout le nécessaire allez dans le dossier setup et faites un petit :
 sudo sh setup.sh
 
+/!\ IMPRESSION PAPIER /!\
+Modifiez la variable paperprinter de la classe EcoTicketClass.py avec le nom de l'imprimante papier pour l'impression papier.
+
 Pour le bluetooth :
 sudo apt-get install bluetooth libbluetooth-dev
 sudo pip install pybluez
