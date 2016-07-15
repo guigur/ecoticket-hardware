@@ -5,7 +5,11 @@ import struct
 import random
 import subprocess
 
+#from smartGPIO import GPIO
+#from lib_tft144 import TFT144
+
 import PythonMagick
+from PIL import Image
 
 import qrcode
 
@@ -18,6 +22,7 @@ import lightblue
 
 import time
 import datetime
+from time import sleep
 
 import ParserClass
 import UtilsClass
@@ -53,6 +58,9 @@ class EcoTicket():
     ## PDF printed path
     home = expanduser("~")
     printedpath = home + "/PDF/tmp.pdf"
+
+    ## Screen
+    #TFT = TFT144(GPIO, spidev.SpiDev(), CE, DC, RST, LED, isRedBoard=False)
 
     ## Parser Instance
     parser = ParserClass.Parser()
@@ -133,7 +141,11 @@ class EcoTicket():
 
         img = qr.make_image()
 
-        img.show()
+        img.save("./test.bmp")
+
+        img2 = Image.open("./test.bmp")
+        img2.show()
+	#self.TFT.draw_bmp("./test.bmp", 26,45)
 
     ## Manage NFC Communication
     def nfcCommunication(self):
@@ -279,6 +291,7 @@ class EcoTicket():
         pdfRealName = date + '_' + total + '_' + ShopName
 	
 	while (choice != 1 and choice != 2 and choice != 3):
+	    #TFT.put_string("Virtual(1) or Paper(2) or Both(3)",28,28,TFT.WHITE,TFT.BLUE)
             choice = input('Choose Virtual(1) or Paper(2) or Both(3): ')
             if (choice == 1):
 		mode = 1
@@ -289,12 +302,11 @@ class EcoTicket():
             else :
                 print("Wrong Choice !")
 
-        print mode
 	# Manage virtual and both modes
 	choice = 0
         if (mode == 1 or mode == 3):
-            print choice
             while (choice != 1 and choice != 2):
+		#TFT.put_string("QRCode(1) or NFC(2)",28,28,TFT.WHITE,TFT.BLUE)
                 choice = input('Choose QRCode(1) or NFC(2): ')
                 if (choice == 1):
                     print("Main : Start Displaying QRCode ...")
@@ -318,6 +330,8 @@ class EcoTicket():
 	# Manage paper mode
 	if (mode == 2 or mode == 3):
 	    subprocess.call(["lpr", "-P", self.paperprinter, pdf])
+
+	#self.TFT.clear_display(TFT.BLUE)
 
 	self.main()
 
