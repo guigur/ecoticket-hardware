@@ -20,6 +20,7 @@ echo "Install CUPS ..."
 apt-get install cups-pdf
 lpadmin -p cups-pdf -v cups-pdf:/ -E -P /usr/share/ppd/cups-pdf/CUPS-PDF.ppd
 lpoptions -d cups-pdf
+mkdir ~/PDF
 touch ~/PDF/tmp.pdf
 echo "Done !"
 
