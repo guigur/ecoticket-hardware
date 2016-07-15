@@ -7,7 +7,7 @@ os.putenv('SDL_FBDEV', '/dev/fb1')
 
 pygame.init()
 
-size = (128, 160)
+size = (128, 128)
 print pygame.display.Info().current_w
 print pygame.display.Info().current_h
 black = 0, 0, 255
