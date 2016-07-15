@@ -11,11 +11,11 @@ class Parser():
         return self.conf_values
 
     # Call this function in EcoticketClass.py
-    def parseFile(self, filename, conf_values):
+    def parseFile(self, filename, conf_values, date, ShopName):
         # Clean file and keep only articles and prices in cleaned[]
         self.cleanFile(filename, conf_values[3], conf_values[4])
         # Parse cleaned[] and put results in parsed[]
-        total = self.doParsing(conf_values[5])
+        total = self.doParsing(conf_values[5], date, ShopName)
         # Create and fill file
         self.makeFile(filename)
         return total
@@ -34,7 +34,7 @@ class Parser():
             i += 1
         f.close()
 
-    def doParsing(self, delimiters):
+    def doParsing(self, delimiters, date, ShopName):
         i = 0
         j = 1
         last1 = 0
@@ -83,7 +83,12 @@ class Parser():
                 total = total.replace(',', '.')
                 self.parsed.append("TOTAL____" + total + "\n")
                 self.parsed.append("----\n")
-                break
+		# Append total a the beginning of txt file
+		totall = total.replace('.', '-')
+        	totall = total.rstrip('\n')
+        	totall = total.rstrip('€')
+		self.parsed = self.parsed[:1] + [date + '_' + total + '_' + ShopName] + self.parsed[1:]
+		break
         return total
 
     def makeFile(self, filename):

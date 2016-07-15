@@ -142,19 +142,8 @@ class EcoTicket():
         os.system(("python beam.py send text %s") %(self.deviceName + '-' + mac))
 
     ## Manage bluetooth Connection
-    def bluetoothConnection(self, pdfPath, txtPath, total):
+    def bluetoothConnection(self, pdfPath, txtPath, total, pdfRealName):
         toBreak = 0
-
-        ShopName = self.conf_values[0]
-        Category = self.conf_values[2]
-        ctime = time.ctime(os.path.getctime(pdfPath))
-        date = datetime.datetime.strptime(ctime, "%a %b %d %H:%M:%S %Y")
-        date = date.strftime("%d-%m-%Y_%H-%M-%S")
-        total = total.replace(',', '-')
-        total = total.rstrip('\n')
-        total = total.rstrip('€')
-        ShopName = ShopName.replace(' ', '-')
-        pdfRealName = date + '_' + total + '_' + ShopName
 
         name_tmp = open('parsed/name_tmp.txt', 'w')
         pdf_tmp = open('parsed/pdf_tmp.txt', 'w')
@@ -272,11 +261,23 @@ class EcoTicket():
         txtPath = self.readPDF(pdf)
         print("Main : End Reading PDF ...")
 
+	ShopName = self.conf_values[0]
+        Category = self.conf_values[2]
+        ctime = time.ctime(os.path.getctime(pdf))
+        date = datetime.datetime.strptime(ctime, "%a %b %d %H:%M:%S %Y")
+        date = date.strftime("%d-%m-%Y_%H-%M-%S")
+        ShopName = ShopName.replace(' ', '-')
+
         print("Main : Start Parsing TXT File ...")
         ## Parse TXT file
-        total = self.parser.parseFile(txtPath, self.conf_values)
+        total = self.parser.parseFile(txtPath, self.conf_values, date, ShopName)
         print("Main : End Parsing TXT File ...")
 
+	total = total.replace(',', '-')
+        total = total.rstrip('\n')
+        total = total.rstrip('€')
+        pdfRealName = date + '_' + total + '_' + ShopName
+	
 	while (choice != 1 and choice != 2 and choice != 3):
             choice = input('Choose Virtual(1) or Paper(2) or Both(3): ')
             if (choice == 1):
@@ -309,7 +310,7 @@ class EcoTicket():
                     print("Wrong Choice !")
             print("Main : Start Sending via Bluetooth ...")
             ## Test bluetooth
-            self.bluetoothConnection(pdf, txtPath, total)
+            self.bluetoothConnection(pdf, txtPath, total, pdfRealName)
             print("Main : End Sending via Bluetooth ...")
             ## Clean temp files
             os.remove(txtPath)
