@@ -14,6 +14,13 @@ http://caisse.enregistreuse.fr/
 Les installations a effectuer sont les suivantes (il se peut que j'en ai
 oublié, si tel est le cas merci de me le dire) :
 
+/!\ SETUP.SH /!\
+Pour installer tout le nécessaire allez dans le dossier setup et faites un petit :
+sudo sh setup.sh
+
+/!\ IMPRESSION PAPIER /!\
+Modifiez la variable paperprinter de la classe EcoTicketClass.py avec le nom de l'imprimante papier pour l'impression papier.
+
 Pour le bluetooth :
 sudo apt-get install bluetooth libbluetooth-dev
 sudo pip install pybluez
@@ -25,19 +32,30 @@ Pour Node.js :
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo apt-get install -y build-essential
+sudo pip install Naked
 
 Pour le BLE :
 sudo apt-get install bluetooth bluez libbluetooth-dev libudev-dev
+sudo npm install uuid
+
+Pour CUPS :
+sudo apt-get install cups-pdf
+sudo lpadmin -p cups-pdf -v cups-pdf:/ -E -P /usr/share/ppd/cups-pdf/CUPS-PDF.ppd
+lpoptions -d cups-pdf
 
 Le programme est à lancer en root mais en éxécutant cette commande vous pourrez le lancer en non-root (normalement) :
 sudo apt-get install libcap2-bin
 sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
+
+Si vous recevez le message d'erreur "cannot find module bluetooth-hci-socket" :
+sudo npm install bluetooth-hci-socket
 
 ---
 
 MAJ 17/04/2016 : l'adresse MAC est récupérée automatiquement !
 MAJ 25/05/2016 : nouveau parser + ajout du support du restaurant Le Comptoir (voir Setup)
 MAJ 10/07/2016 : implémentation du BLE + nouveaux packages à installer + il faut lancer le programme en root
+MAJ 14/07/2016 : Implémentation de CUPS + création d'un setup.sh
 
 Setup :
 Le parser ne fonctionne plus avec des fichiers de conf, on utilise désormais
