@@ -19,7 +19,7 @@ from bluetooth import *
 import bluetooth
 import threading
 from threading import Thread
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 import lightblue
 
 import time
@@ -62,7 +62,8 @@ class EcoTicket():
     printedpath = home + "/PDF/tmp.pdf"
 
     ## Multiprocessing
-    t = None
+    pc = None
+    ple = None
 
     ## Screen
     #TFT = TFT144(GPIO, spidev.SpiDev(), CE, DC, RST, LED, isRedBoard=False)
@@ -158,8 +159,8 @@ class EcoTicket():
 
         os.system(("python beam.py send text %s") %(self.deviceName + '-' + mac))
 
-    ## Test
-    def bluetoothClassic(self, pdfPath, txtPath, total, pdfRealName):
+    ## Manage Bluetooth Classic Communication
+    def bluetoothClassic(self, pdfPath, txtPath, total, pdfRealName, q):
 	name = "BluetoothChat"
         uuid = "fa87c0d0-afac-11de-8a39-0800200c9a66"
 
@@ -226,20 +227,15 @@ class EcoTicket():
             echo = echoThread(client_sock, client_info)
             echo.setDaemon(True)
             echo.start()
+	    echo.join()
+	    q.put("done")
+	    break
 
         server_sock.close()
 
-    ## Manage bluetooth Connection
-    def bluetoothConnection(self, pdfPath, txtPath, total, pdfRealName):
-        toBreak = 0
-
-	#self.t = Thread(target=self.bluetoothClassic, args=(pdfPath, txtPath, total, pdfRealName))
-        #self.t.start()
-	self.t = Process(target=self.bluetoothClassic, args=(pdfPath, txtPath, total, pdfRealName))
-    	self.t.start()
-    	#self.t.join()
-
-        name_tmp = open('parsed/name_tmp.txt', 'w')
+    ## Manage BluetoothLE Communication
+    def bluetoothLE(self, pdfPath, txtPath, total, pdfRealName, q):
+	name_tmp = open('parsed/name_tmp.txt', 'w')
         pdf_tmp = open('parsed/pdf_tmp.txt', 'w')
         txt_tmp = open('parsed/txt_tmp.txt', 'w')
         pdf_data = open(pdfPath, 'rb')
@@ -256,6 +252,43 @@ class EcoTicket():
         txt_data.close()
 
         success = execute_js('js/main.js')
+	q.put("done")
+
+    ## Manage bluetooth Connection
+    def bluetoothConnection(self, pdfPath, txtPath, total, pdfRealName):
+        toBreak = 0
+
+	#self.t = Thread(target=self.bluetoothClassic, args=(pdfPath, txtPath, total, pdfRealName))
+        #self.t.start()
+	q = Queue()
+	self.pc = Process(target=self.bluetoothClassic, args=(pdfPath, txtPath, total, pdfRealName, q))
+    	self.pc.start()
+	self.ple = Process(target=self.bluetoothLE, args=(pdfPath, txtPath, total, pdfRealName, q))
+    	self.ple.start()
+	while (True):
+	    if (q.get() == "done"):
+	        self.pc.terminate()
+		self.ple.terminate()
+		break
+    	#self.pc.join()
+
+        #name_tmp = open('parsed/name_tmp.txt', 'w')
+        #pdf_tmp = open('parsed/pdf_tmp.txt', 'w')
+        #txt_tmp = open('parsed/txt_tmp.txt', 'w')
+        #pdf_data = open(pdfPath, 'rb')
+        #txt_data = open(txtPath, 'rb')
+
+        #name_tmp.write(pdfRealName)
+        #pdf_tmp.write(pdf_data.read())
+        #txt_tmp.write(txt_data.read())
+
+        #name_tmp.close()
+        #pdf_tmp.close()
+        #txt_tmp.close()
+        #pdf_data.close()
+        #txt_data.close()
+
+        #success = execute_js('js/main.js')
 
 #        name = "BluetoothChat"
 #        uuid = "fa87c0d0-afac-11de-8a39-0800200c9a66"
@@ -340,8 +373,8 @@ class EcoTicket():
         choice = 0
 	mode = 0
 
-	os.system("sudo hciconfig hci0 noleadv")
-	os.system("sudo hciconfig hci0 leadv 0")
+	#os.system("sudo hciconfig hci0 noleadv")
+	#os.system("sudo hciconfig hci0 leadv 0")
 
         print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
@@ -411,7 +444,7 @@ class EcoTicket():
             print("Main : End Sending via Bluetooth ...")
             ## Clean temp files
             os.remove(txtPath)
-	    self.t.terminate()
+	    self.pc.terminate()
 
 	# Manage paper mode
 	if (mode == 2 or mode == 3):
