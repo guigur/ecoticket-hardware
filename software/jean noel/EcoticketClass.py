@@ -18,6 +18,8 @@ from uuid import getnode as get_mac
 from bluetooth import *
 import bluetooth
 import threading
+from threading import Thread
+from multiprocessing import Process
 import lightblue
 
 import time
@@ -58,6 +60,9 @@ class EcoTicket():
     ## PDF printed path
     home = expanduser("~")
     printedpath = home + "/PDF/tmp.pdf"
+
+    ## Multiprocessing
+    t = None
 
     ## Screen
     #TFT = TFT144(GPIO, spidev.SpiDev(), CE, DC, RST, LED, isRedBoard=False)
@@ -153,9 +158,86 @@ class EcoTicket():
 
         os.system(("python beam.py send text %s") %(self.deviceName + '-' + mac))
 
+    ## Test
+    def bluetoothClassic(self, pdfPath, txtPath, total, pdfRealName):
+	name = "BluetoothChat"
+        uuid = "fa87c0d0-afac-11de-8a39-0800200c9a66"
+
+        server_sock = bluetooth.BluetoothSocket( bluetooth.RFCOMM )
+        server_sock.bind(("", bluetooth.PORT_ANY))
+        server_sock.listen(1)
+        port = server_sock.getsockname()[1]
+
+        bluetooth.advertise_service( server_sock, name, uuid )
+
+        print "Waiting for connection on RFCOMM channel %d" % port
+
+        class echoThread(threading.Thread):
+            def __init__ (self,sock,client_info):
+                threading.Thread.__init__(self)
+                self.sock = sock
+                self.client_info = client_info
+            def run(self):
+                try:
+                    ## Send PDF
+                    time.sleep(1)
+                    self.sock.send("SOF PDF " + pdfRealName)
+                    time.sleep(1)
+                    pdfSize = os.path.getsize(pdfPath)
+                    f = open(pdfPath,'rb')
+                    print 'Sending PDF ...'
+                    l = f.read(pdfSize)
+                    self.sock.send(l)
+                    #while (l):
+                    #    self.sock.send(l)
+                    #    l = f.read(1024)
+                    #    print 'Sending PDF ...'
+                    f.close()
+                    print 'Sending PDF done !'
+                    time.sleep(1)
+                    self.sock.send("EOF PDF")
+
+                    ## Send TXT
+                    time.sleep(1)
+                    self.sock.send("SOF TXT " + pdfRealName)
+                    time.sleep(1)
+                    txtSize = os.path.getsize(txtPath)
+                    f = open(txtPath,'rb')
+                    print 'Sending TXT ...'
+                    l = f.read(txtSize)
+                    self.sock.send(l)
+                    #while (l):
+                    #    print 'Sending TXT ...'
+                    #    self.sock.send(l)
+                    #    l = f.read(1024)
+                    f.close()
+                    print 'Sending TXT done !'
+                    time.sleep(1)
+                    self.sock.send("EOF TXT")
+                except IOError:
+                    pass
+                self.sock.close()
+                print self.client_info, ": disconnected"
+
+        timeout = time.time() + 10
+        while (True):
+            client_sock, client_info = server_sock.accept()
+            print client_info, ": connection accepted"
+            echo = echoThread(client_sock, client_info)
+            echo.setDaemon(True)
+            echo.start()
+
+        server_sock.close()
+
     ## Manage bluetooth Connection
     def bluetoothConnection(self, pdfPath, txtPath, total, pdfRealName):
         toBreak = 0
+
+	#self.t = Thread(target=self.bluetoothClassic, args=(pdfPath, txtPath, total, pdfRealName))
+        #self.t.start()
+	self.t = Process(target=self.bluetoothClassic, args=(pdfPath, txtPath, total, pdfRealName))
+    	self.t.start()
+    	#self.t.join()
 
         name_tmp = open('parsed/name_tmp.txt', 'w')
         pdf_tmp = open('parsed/pdf_tmp.txt', 'w')
@@ -258,6 +340,9 @@ class EcoTicket():
         choice = 0
 	mode = 0
 
+	os.system("sudo hciconfig hci0 noleadv")
+	os.system("sudo hciconfig hci0 leadv 0")
+
         print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
         self.getConfValues()
@@ -326,6 +411,7 @@ class EcoTicket():
             print("Main : End Sending via Bluetooth ...")
             ## Clean temp files
             os.remove(txtPath)
+	    self.t.terminate()
 
 	# Manage paper mode
 	if (mode == 2 or mode == 3):
