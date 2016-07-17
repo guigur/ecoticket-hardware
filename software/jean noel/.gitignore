@@ -1,0 +1,5 @@
+js/node_modules/*
+js/build/*
+js/package.json
+parsed/*
+setup/qrcode-5.3

@@ -97,14 +97,17 @@ class EcoTicket():
     def waitPDF(self):
 	class MyHandler(FileSystemEventHandler):
     	    def on_modified(self, event):
-	        path = expanduser("~") + "/PDF"
+                print "Je suis dans on modified"
+                path = "/home/pi/PDF"
+                #expanduser("~") + "/PDF"
 	        newname = path + "/tmp.pdf"
 	        if event.src_path != path:
 		    print "waitPDF : PDF printed !"
 		    observer.stop()
 		    os.rename(event.src_path, newname)
 
-        dirpath = self.home + "/PDF"
+        dirpath = "/home/pi/PDF"
+        #self.home + "/PDF"
         event_handler = MyHandler()
         observer = Observer()
         observer.schedule(event_handler, path=dirpath, recursive=False)
