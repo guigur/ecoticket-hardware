@@ -19,10 +19,10 @@ import spidev
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-RST = 18
+RST = 25
 CE =   0    # 0 or 1 for CE0 / CE1 number (NOT the pin#)
-DC =  22    # Labeled on board as "A0"
-LED = 23    # LED backlight sinks 10-14 mA @ 3V
+DC =  24    # Labeled on board as "A0"
+LED = 5    # LED backlight sinks 10-14 mA @ 3V
 
 
 
@@ -45,7 +45,7 @@ for i in range (32,256):
 sleep(2)
 
 
-TFT.clear_display(TFT.BLUE)
+TFT.clear_display(TFT.GREEN)
 
 
 print ("Message:")
