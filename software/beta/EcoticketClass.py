@@ -56,7 +56,7 @@ class EcoTicket():
     deviceName = "EcoTicketBeta"
 
     ## Printer name for paper
-    paperprinter = ""
+    paperprinter = "PAPIER"
 
     ## PDF printed path
     home = expanduser("~")
@@ -428,7 +428,10 @@ class EcoTicket():
         pdfRealName = date + '_' + total + '_' + ShopName
 	
 	while (choice != 1 and choice != 2 and choice != 3):
-	    self.TFT.put_string("Virtual(1) or Paper(2) or Both(3)",5,5, self.TFT.BLACK, self.TFT.ECOGREEN)
+            self.TFT.clear_display(self.TFT.ECOGREEN)
+	    self.TFT.put_string("Virtual(1)",5,5, self.TFT.BLACK, self.TFT.ECOGREEN, 7)
+            self.TFT.put_string("Paper(2)",5,55, self.TFT.BLACK, self.TFT.ECOGREEN, 7)
+            self.TFT.put_string("Both(3)",5,105, self.TFT.BLACK, self.TFT.ECOGREEN, 7)
             choice = input('Choose Virtual(1) or Paper(2) or Both(3): ')
             if (choice == 1):
 		mode = 1
