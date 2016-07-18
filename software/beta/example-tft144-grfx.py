@@ -1,4 +1,3 @@
-
 from smartGPIO import GPIO
 from lib_tft144 import TFT144
 from time import sleep
@@ -29,23 +28,24 @@ TFT = TFT144(GPIO, spi, CE, DC, RST, LED, TFT144.ORIENTATION90, isRedBoard=False
 posx=0
 posy=0
 
-TFT.draw_bmp("depth.bmp")
+TFT.draw_bmp("test.bmp")
+#"test.bmp")
 #"img_128x/ecoticket_logo_128x.bmp")
-sleep(10)
+sleep(2)
 
-print ("Rectangle")
-TFT.draw_filled_rectangle(0,0,50,50 ,TFT.RED)
+#print ("Rectangle")
+#TFT.draw_filled_rectangle(0,0,50,50 ,TFT.RED)
 #TFT.draw_filled_rectangle(0,64,128,128,TFT.BLACK)
 #for i in range (4,32,4):
  #  TFT.draw_rectangle(i,i,128-i,64-i,TFT.colour565(i-1,i-1,i-1))
-sleep(10)
+#sleep(10)
 #print ("Line:")
-TFT.draw_line(0,0,128,128,TFT.GREEN)
-TFT.draw_line(0,128,128,0,TFT.GREEN)
+#TFT.draw_line(0,0,128,128,TFT.GREEN)
+#TFT.draw_line(0,128,128,0,TFT.GREEN)
 
-print ("Circles:")
-TFT.draw_circle(64,64,63,TFT.BLUE)
-TFT.draw_circle(64,64,53,TFT.BLUE)
-TFT.draw_circle(64,64,43,TFT.BLUE)
-TFT.draw_circle(64,64,33,TFT.BLUE)
+#print ("Circles:")
+#TFT.draw_circle(64,64,63,TFT.BLUE)
+#TFT.draw_circle(64,64,53,TFT.BLUE)
+#TFT.draw_circle(64,64,43,TFT.BLUE)
+#TFT.draw_circle(64,64,33,TFT.BLUE)
 

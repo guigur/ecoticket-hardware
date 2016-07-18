@@ -151,9 +151,10 @@ class EcoTicket():
 
         img = qr.make_image()
 
-	size = 110, 110
+	size = 128, 128
 	img.thumbnail(size, Image.ANTIALIAS)	
-	newimg = img.convert('RGB')        
+	newimg = img.convert('RGB')
+        newimg = newimg.transpose(Image.FLIP_LEFT_RIGHT)
 	newimg.save("./test.bmp")
 
         img2 = Image.open("./test.bmp")

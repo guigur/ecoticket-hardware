@@ -432,27 +432,29 @@ class TFT144:
             w = ord(bitmap_file.read(1))
             bitmap_file.seek(22)
             h = ord(bitmap_file.read(1))
+            lol = 50
             bitmap_file.seek(10)
             start = ord(bitmap_file.read(1))
             bitmap_file.seek(start)
             self.set_frame(x0, x0+w-1, y0, y0+h-1)
+            #y0-h+1)
             self.write_command(WRITE_MEMORY_START)
             for y in range(h):   # 3 bytes of colour / pixel
-                  dbuf = [0] * (w*2)
-                  for x in range(w):
-                      b = ord(bitmap_file.read(1))
-                      g = ord(bitmap_file.read(1))
-                      r = ord(bitmap_file.read(1))
-                      RGB = self.colour565(r, g, b)
-                      #RGB = self.YELLOW
-                      dbuf[2*x] = RGB>>8
-                      dbuf[1 + (2*x)] = RGB&(~65280)
-                  self.write_data(dbuf)
-                  # Now, BMP has a 4byte alignment issue at end of each line   V1.0.1
-                  x = 3*w # bytes in line @ 3bytes/pixel
-                  while (x % 4):
-                      x += 1
-                      bitmap_file.read(1)   # waste a byte until aligned
+                dbuf = [0] * (w*2)
+                for x in range(w):
+                    b = ord(bitmap_file.read(1))
+                    g = ord(bitmap_file.read(1))
+                    r = ord(bitmap_file.read(1))
+                    RGB = self.colour565(r, g, b)
+                    #RGB = self.YELLOW
+                    dbuf[2*x] = RGB>>8
+                    dbuf[1 + (2*x)] = RGB&(~65280)
+                self.write_data(dbuf)
+                # Now, BMP has a 4byte alignment issue at end of each line   V1.0.1
+                x = 3*w # bytes in line @ 3bytes/pixel
+                while (x % 4):
+                    x += 1
+                    bitmap_file.read(1)   # waste a byte until aligned
         return True
 
     def invert_screen(self):
