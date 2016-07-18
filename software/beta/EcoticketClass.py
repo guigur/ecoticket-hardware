@@ -153,7 +153,8 @@ class EcoTicket():
 
 	size = 110, 110
 	img.thumbnail(size, Image.ANTIALIAS)	
-        img.save("./test.bmp")
+	newimg = img.convert('RGB')        
+	newimg.save("./test.bmp")
 
         img2 = Image.open("./test.bmp")
         img2.show()
