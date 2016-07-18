@@ -1,3 +1,7 @@
+echo "Installing python-imaging ..."
+apt-get install python-imaging
+echo "Done"
+
 echo "Installing node ..."
 curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 apt-get install -y nodejs
