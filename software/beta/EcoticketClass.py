@@ -5,9 +5,6 @@ import struct
 import random
 import subprocess
 
-#from smartGPIO import GPIO
-#from lib_tft144 import TFT144
-
 import PythonMagick
 from PIL import Image
 import Image
@@ -35,6 +32,9 @@ from Naked.toolshed.shell import execute_js
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from os.path import expanduser
+
+from smartGPIO import GPIO
+from lib_tft144 import TFT144
 
 class EcoTicket():
     ## Conf values
@@ -67,7 +67,16 @@ class EcoTicket():
     ple = None
 
     ## Screen
-    #TFT = TFT144(GPIO, spidev.SpiDev(), CE, DC, RST, LED, isRedBoard=False)
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    RST = 25    # RST may use direct +3V strapping, and then be listed as 0 here. (Soft Reset used instead)
+    CE =   0    # RPI GPIO: 0 or 1 for CE0 / CE1 number (NOT the pin#)
+    DC =  24    # Labeled on board as "A0"   Command/Data select
+    LED = 23    # LED may also be strapped direct to +3V, (and then LED=0 here). LED sinks 10-14 mA @ 3V
+    import spidev
+
+    TFT = TFT144(GPIO, spidev.SpiDev(), CE, DC, RST, LED, TFT144.ORIENTATION90)
+    TFT.clear_display(TFT.ECOGREEN)
 
     ## Parser Instance
     parser = ParserClass.Parser()
@@ -96,13 +105,14 @@ class EcoTicket():
 
     ## Wait for PDF to be printed
     def waitPDF(self):
-	class MyHandler(FileSystemEventHandler):
+        class MyHandler(FileSystemEventHandler):
     	    def on_modified(self, event):
-                print "Je suis dans on modified"
                 path = "/home/pi/PDF"
                 #expanduser("~") + "/PDF"
 	        newname = path + "/tmp.pdf"
 	        if event.src_path != path:
+                    #self.TFT.clear_display(self.TFT.ECOGREEN)
+                    #self.TFT.put_string("PDF recived", 5,5,self.TFT.BLACK, self.TFT.ECOGREEN, 5)
 		    print "waitPDF : PDF printed !"
 		    observer.stop()
 		    os.rename(event.src_path, newname)
@@ -158,6 +168,7 @@ class EcoTicket():
 	newimg.save("./test.bmp")
 
         img2 = Image.open("./test.bmp")
+        self.TFT.draw_bmp("test.bmp")
         img2.show()
 	#self.TFT.draw_bmp("./test.bmp", 26,45)
 
@@ -381,14 +392,16 @@ class EcoTicket():
 
         choice = 0
 	mode = 0
-
+        
         print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
         self.getConfValues()
         print ("Main : End Getting Conf Values ...")
-
+        
         print ("Main : Start Waiting for PDF ...")
-	## Wait for PDF to be printed
+        self.TFT.clear_display(self.TFT.ECOGREEN)
+        self.TFT.put_string("Waiting for PDF", 5,5,self.TFT.BLACK, self.TFT.ECOGREEN, 5)
+        ## Wait for PDF to be printed
         self.waitPDF()
         print ("Main : End Waiting for PDF ...")
 
@@ -415,7 +428,7 @@ class EcoTicket():
         pdfRealName = date + '_' + total + '_' + ShopName
 	
 	while (choice != 1 and choice != 2 and choice != 3):
-	    #TFT.put_string("Virtual(1) or Paper(2) or Both(3)",28,28,TFT.WHITE,TFT.BLUE)
+	    self.TFT.put_string("Virtual(1) or Paper(2) or Both(3)",5,5, self.TFT.BLACK, self.TFT.ECOGREEN)
             choice = input('Choose Virtual(1) or Paper(2) or Both(3): ')
             if (choice == 1):
 		mode = 1

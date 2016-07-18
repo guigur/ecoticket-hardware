@@ -122,6 +122,7 @@ class TFT144:
         self.is_redboard = isRedBoard
         self.BLUE = self.colour565(0,0,255)
         self.GREEN = self.colour565(0,255, 0)
+        self.ECOGREEN = self.colour565(39,103,81)
         self.RED = self.colour565(255,0,0)
         self.PINK = self.colour565(255,120,120)
         self.LIGHTBLUE = self.colour565(120,120,255)
