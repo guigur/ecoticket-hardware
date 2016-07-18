@@ -29,7 +29,8 @@ TFT = TFT144(GPIO, spi, CE, DC, RST, LED, TFT144.ORIENTATION90, isRedBoard=False
 posx=0
 posy=0
 
-TFT.draw_bmp("img_128x/ecoticket_logo_128x.bmp")
+TFT.draw_bmp("depth1.bmp")
+#"img_128x/ecoticket_logo_128x.bmp")
 sleep(10)
 
 print ("Rectangle")

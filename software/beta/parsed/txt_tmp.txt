@@ -1,4 +1,5 @@
 ----
+<<<<<<< HEAD
 18-07-2016_15-21-47_127.00_Le-Comptoir1 X CANETTE SODA____3.00
 4 X VERRE DE VIN A...____24.00
 1 X BOL POMMES DE TERRE____3.50
@@ -14,3 +15,5 @@
 4 X GRAND CAFÉ,THÉ,INFUSION____12.00
 TOTAL____127.00
 ----
+=======
+>>>>>>> be5fb2f935befeee69a4479203afdaabcca41769
