@@ -210,8 +210,8 @@ class TFT144:
        self.write_command(FRAME_RATE_CONTROL1)
        self.write_data([0x08, 0x08])
 
-       self.write_command(DISPLAY_INVERSION)
-       self.write_data(0x01)
+       #self.write_command(DISPLAY_INVERSION)
+       #self.write_data(0x01)
 
        self.write_command(POWER_CONTROL1)
        self.write_data([0x0a, 0x02])
