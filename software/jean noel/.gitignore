@@ -4,3 +4,4 @@ js/package.json
 parsed/*
 setup/qrcode-5.3
 *~
+*.pyc
