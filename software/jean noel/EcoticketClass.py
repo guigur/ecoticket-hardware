@@ -208,7 +208,8 @@ class EcoTicket():
                     txtSize = os.path.getsize(txtPath)
                     f = open(txtPath,'rb')
                     print 'Sending TXT ...'
-                    l = f.read(txtSize)
+                    l = pdfRealName + "\n"
+		    l += f.read(txtSize)
                     self.sock.send(l)
                     #while (l):
                     #    print 'Sending TXT ...'
