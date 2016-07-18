@@ -377,9 +377,6 @@ class EcoTicket():
         choice = 0
 	mode = 0
 
-	#os.system("sudo hciconfig hci0 noleadv")
-	#os.system("sudo hciconfig hci0 leadv 0")
-
         print ("Main : Start Getting Conf Values ...")
         ## Define conf values from the conf file
         self.getConfValues()
