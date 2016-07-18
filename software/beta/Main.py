@@ -1,4 +1,5 @@
 import EcoticketClass
+import os
 
 #os.system("sudo hciconfig hci0 noleadv")
 #os.system("sudo hciconfig hci0 leadv 0")

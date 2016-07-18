@@ -10,6 +10,7 @@ import subprocess
 
 import PythonMagick
 from PIL import Image
+import Image
 
 import qrcode
 
@@ -98,16 +99,16 @@ class EcoTicket():
 	class MyHandler(FileSystemEventHandler):
     	    def on_modified(self, event):
                 print "Je suis dans on modified"
-                path = "/home/pi/PDF"
-                #expanduser("~") + "/PDF"
+                #path = "/home/pi/PDF"
+                path = expanduser("~") + "/PDF"
 	        newname = path + "/tmp.pdf"
 	        if event.src_path != path:
 		    print "waitPDF : PDF printed !"
 		    observer.stop()
 		    os.rename(event.src_path, newname)
 
-        dirpath = "/home/pi/PDF"
-        #self.home + "/PDF"
+        #dirpath = "/home/pi/PDF"
+        dirpath = self.home + "/PDF"
         event_handler = MyHandler()
         observer = Observer()
         observer.schedule(event_handler, path=dirpath, recursive=False)
@@ -150,6 +151,8 @@ class EcoTicket():
 
         img = qr.make_image()
 
+	size = 110, 110
+	img.thumbnail(size, Image.ANTIALIAS)	
         img.save("./test.bmp")
 
         img2 = Image.open("./test.bmp")
