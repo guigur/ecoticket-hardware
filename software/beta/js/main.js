@@ -9,18 +9,31 @@ var EchoPdf = require('./ble_pdf');
 var EchoTxt = require('./ble_txt');
 
 fs = require('fs');
-var name = fs.readFileSync('./parsed/name_tmp.txt', 'utf8');
 
+var chunkingStreams = require('chunking-streams');
+var SizeChunker = chunkingStreams.SizeChunker
+
+var name = fs.readFileSync('./parsed/name_tmp.txt', 'utf8');
 var characs = [new EchoName(name)];
 
-var pdf = fs.readFileSync('./parsed/pdf_tmp.txt', 'utf8');
+/*var pdf = fs.readFileSync('./parsed/pdf_tmp.txt', 'utf8');
 pdf = pdf.match(/[\s\S]{1,20}/g) || [];
 var i = 0;
 var len = pdf.length;
 while (i < len) {
 	characs.push(new EchoPdf(pdf[i], uuid.v1()));
 	i = i + 1;
-}
+}*/
+var input = fs.createReadStream('./parsed/pdf_tmp.txt'),
+    chunker = new SizeChunker({
+        chunkSize: 20
+    });
+ 
+chunker.on('data', function(chunk) {
+    characs.push(new EchoPdf(chunk.data, uuid.v1()));
+});
+
+input.pipe(chunker); 
 
 var txt = fs.readFileSync('./parsed/txt_tmp.txt', 'utf8');
 txt = txt.match(/[\s\S]{1,20}/g) || [];
@@ -47,7 +60,7 @@ bleno.on('advertisingStart', function(error) {
 	console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
 
     if (!error) {
-	    bleno.setServices([
+		bleno.setServices([
 	      new BlenoPrimaryService({
 	        uuid: '6d95c7ae-468f-11e6-beb8-9e71128cae77',
 	        characteristics: characs
