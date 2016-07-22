@@ -1,0 +1,84 @@
+lib_tft144
+=========
+
+V1.6
+
+Python library for a 128x128 LCD-TFT module with ILI9163 controller chip.
+This library works wirh Raspberry Oi or with Virtual-GPIO
+
+Raspberry Pi pin numbers are in BCM numbering.
+SCLK and MISO go to SCK and SDA on module.
+The module is write-only, so MOSI is not used.
+VCC of module goes to Raspberry Pi +5V.
+Logic pins are 3.3V.
+RPi.GPIO and SpiDev are required installed at Raspberry Pi.
+The python2.7 and python3.3 are supported.
+
+Fonts are coded 1=4x6  2=8x12  3=6x8=default  4=12x16   5=8x12   6=16x24   7=8x16   8=16x32   (V1.1)
+Screen pixel coordinates are x: 0 to 127    y: 0 to 127     l-r, t-b
+
+
+IMPORT the library module:
+
+from lib_tft144 import TFT144
+
+
+CONSTRUCTOR:
+
+* myTFT = TFT144(GPIO, SpiDev, CE_num, A0_pin, RST_pin, LED_pin, Orientation, isRedBoard, spi_speed)
+---- where CE_num = 0 or 1 (CE0/CE1) on Raspberry Pi, actual CE pin# on virtual-GPIO,
+---- "A0" (address line 0??) is also known as DC (data/command),
+---- RST_pin may be declared or defaulted as 0 (and then tie RST to +3.3V),
+---- LED_pin may be declared or defaulted as 0 (and then tie LED to +3.3V),
+---- Orientation defaults to 0 degrees, but may be:
+      TFT144.ORIENTATION0, or ...90 or ...180 or ...270
+---- isRedBoard must be True for correct compensation for RED board error. Default False.
+---- spi_speed.  Raspberry Pi max is 32000000. Black board seems to accept 32000000, but red board may need lower.
+       Default 16000000
+
+Constructor examples:
+
+* myTFT = TFT144(GPIO, spidev.SpiDev(), 0, 22)    # RPi
+* myLCD = TFT144(GPIO, GPIO.SpiDev(), 1, 22, 18, 23, TFT144.ORIENTATION270)    # virtGPIO
+
+
+OBJECT PROPERTIES:
+
+* ORIENTATION90 etc
+* Prenamed colours: BLUE GREEN RED PINK VIOLET LIGHTGREEN
+                 WHITE GREY LIGHTBLUE YELLOW BLACK
+* fontW and fontH: width and height of last output character      V1.1
+
+
+OBJECT FUNCTIONS:
+
+* led_on(True/False)     Turns screen on/off (if LED pin is controlled!)
+* reset_LCD()              Hard or soft reset of module, depending whether RST pin is active.
+* clear_display(colour)
+* invert_screen()      Reverse every colour
+* normal_screen()    Back to normal colours
+* rgb(red, green, blue)   From 3 (5-bit) primary colours, return a 16-bit “colour”
+* put_char(char, x, y, foregroundColour, backgroundColour, font)   Font defaults to 3 (6x8)
+* put_string(string, x, y, fgColour, bgColour, font)   Wraps (to similar start column) to next line
+* textX(X, font)             Return pixel x-column matching  X character-sizes across
+* textY(Y, font)              Return pixel y-row matching Y character-sizes down
+* draw_dot(x, y, colour)  At pixel coordinates x:y
+* draw_line(x0, y0, x1, y1, colour)   Line 1 pixel wide from x0:y0 to x1:y1
+* draw_rectangle(x0, y0, x1, y1, colour)   Single pixel frame
+* draw_filled_rectangle(x0, y0, x1, y1, colour)
+* draw_circle(x0, y0, radius, colour)    1 pixel wide
+* draw_bmp(filename, x0, y0)   If .bmp file is found, load at top/left = x0:y0. No rescaling.
+    Save your BMP file vertically "flipped". Ensure your x0:y0 origin allows pixel space on display.
+
+
+EXAMPLE APPLICATION (Raspberry Pi):
+
+import RPi.GPIO as GPIO
+import spidev
+spi = spidev.SpiDev()
+from lib_tft144 import TFT144
+TFT = TFT144(GPIO, spi, 0, 22)
+TFT.clear_display(TFT.BLUE)
+TFT.put_string(“Hello”, 50, 30, TFT.WHITE, TFT.BLUE, 4)
+# This example uses CE0 on the SPI, and GPIO pin22 to “A0” on the module.
+# It prints “Hello” near centre of screen, white lettering on all blue background, large font 4.
