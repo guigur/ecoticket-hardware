@@ -22,23 +22,3 @@ The holes are not drilled
 
 ### And the gerber files preview
 ![the ecoticket alpha](/PCB/Realease%20alpha/pcb%2018.03.16.PNG "The gerber viewer")
-
-## Program for the NRF51822 (BT module)
-This part is empty for now
-
-## Program for the ENC28J60
-The Ecoticket's Hardware use 2 ENC28J60 chips. They act like ethernet interface thru the SPI bus.
-The overlay program is in the software/config directory
-just put it in the folder
-```
-cp second-enc28j60-overlay.dtb /boot/overlay/.
-```
-Then open the config file
-```
-sudo emacs /boot/config.txt
-```
-And add at the end of the file theses lines
-```
-overlay=enc28j60-overlay
-overlay=second-enc28j60-overlay
-```

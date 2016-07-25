@@ -1,9 +1,0 @@
-Recupérer automatiquement le ticket de cup ou recoder un server  ou plugin
-Automatiser le code pour afficher sur l ecran le qrcode et activer le nfc
-intégrer les 3 boutons poussoirs
-codder la partie nfc
-Optimiser code ecran avec spi natif
-Changer de i2c a spi le nfc (il semple avoir des problems)
-Codder la partie bluetooth avec le nrf51 puis le connecter sur le spi ou i2c ou uart
-laisser le choix du mode vm ou borne
-Codder programe libnfc python
