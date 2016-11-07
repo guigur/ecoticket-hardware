@@ -1,8 +1,6 @@
 implement gpio extender for buzzer + lcd signal + keys + leds of keys
 put connector between the 2 boards
-i2c to uart * 3
-power supply
+i2c to uart * 3  : 
 recenter screen
-add debug
 verify pinout of uart + usb
 finish anthena
